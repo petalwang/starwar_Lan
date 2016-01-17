@@ -1,11 +1,13 @@
-""" Basic todo list using webpy 0.3 """
-import web, sys
+
+import web, sys, os
+from pprint import pprint
 
 urls = (
     '/', 'Index',
     '/login', 'Login',
     '/logout', 'Logout',
     '/sample', 'Sample',
+    '/(html)/(.*)', 'Static',
 )
 
 
@@ -14,6 +16,26 @@ app = web.application(urls, locals())
 session = web.session.Session(app, web.session.DiskStore('sessions'))
 
 Password = None
+
+class Static:
+    
+    def GET(self, media, filename):
+        if session.get('logged_in', False):
+            print filename
+            print media
+            filepath = os.path.join(os.getcwd(), media, filename)
+            print filepath
+            try:
+                f = open(filepath, 'r')
+                return f.read()
+            except:
+                return 'No such thing' # you can send an 404 error here if you want
+        else:
+            try:
+                f = open(os.path.join(os.getcwd(), 'html', 'login.html'), 'r')
+                return f.read()
+            except:
+                return 'No such thing' # you can send an 404 error here if you want
 
 class Login:
 
@@ -32,10 +54,8 @@ class Logout:
 class Index:
 
     def GET(self):
-        if session.get('logged_in', False):
-            return 'Display user logged in content'
-        else:
-            return '<html><form action="login" method="POST">password<input type="text" name="password" value="1234"><br><br><input type="submit" value="submit"></form></html>'
+        f = open(os.path.join(os.getcwd(), 'html', 'login.html'), 'r')
+        return f.read()
 
 class Sample:
 

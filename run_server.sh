@@ -1,6 +1,6 @@
 #!/bin/bash
 PASSWORD=1234
-PORT=8080
+PORT=80
 
 sudo pip install web.py
 
