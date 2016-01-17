@@ -1,0 +1,21 @@
+body {
+width: 100%; height: 100%; margin: 0px; padding: 0px; 
+}
+
+#Parallax{
+	    background-color: #9E9C9E;
+        height: 456px;
+        overflow:hidden;
+        position:relative;
+        width:580px;
+        margin:auto;
+        margin-top: 40px;
+        border: 15px solid #666363;    
+        
+}
+
+#Parallax img {
+	position:absolute;
+	top:0;
+	left:0px;
+}
