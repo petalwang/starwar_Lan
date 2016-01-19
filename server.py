@@ -7,7 +7,7 @@ urls = (
     '/login', 'Login',
     '/logout', 'Logout',
     '/sample', 'Sample',
-    '/(html)/(.*)', 'Static',
+    '/(html|DeepDive)/(.*)', 'Static',
 )
 
 
@@ -17,34 +17,39 @@ session = web.session.Session(app, web.session.DiskStore('sessions'))
 
 Password = None
 
+def get_static_file(filepath):
+    try:
+        print 'filepath', filepath
+        f = open(filepath, 'r')
+        return f.read()
+    except:
+        return '404 Not Found'
+
 class Static:
     
     def GET(self, media, filename):
+        print 'media', media
+        print 'filename', filename
+        print 'islogin', session.get('logged_in', False)
+
+        if media == 'html' and filename == 'login.html':
+            return get_static_file(os.path.join(os.getcwd(), 'html', 'login.html'))
+
         if session.get('logged_in', False):
-            print filename
-            print media
-            filepath = os.path.join(os.getcwd(), media, filename)
-            print filepath
-            try:
-                f = open(filepath, 'r')
-                return f.read()
-            except:
-                return 'No such thing' # you can send an 404 error here if you want
-        else:
-            try:
-                f = open(os.path.join(os.getcwd(), 'html', 'login.html'), 'r')
-                return f.read()
-            except:
-                return 'No such thing' # you can send an 404 error here if you want
+            return get_static_file(os.path.join(os.getcwd(), media, filename))
+
+        raise web.seeother('/')
+
 
 class Login:
 
     def POST(self):
         global Password
         password = web.input().password
+        print 'password', password
         if password == Password:
             session.logged_in = True
-            raise web.seeother('/')
+            raise web.seeother('/DeepDive/index.html')
 
 class Logout:
     def GET(self):
